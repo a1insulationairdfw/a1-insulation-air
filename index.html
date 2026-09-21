@@ -350,7 +350,7 @@
           <article class="card featured"><div class="service-icon">IN</div><h3>Insulation</h3><p>Insulation estimates and service to help improve comfort, reduce strain on equipment, and support better efficiency.</p><ul class="mini-list"><li>Comfort improvements</li><li>Insulation estimates</li><li>Home efficiency support</li></ul></article>
           <article class="card"><div class="service-icon">PM</div><h3>Preventative Maintenance</h3><p>Residential maintenance agreements with seasonal checks to help catch issues before peak weather.</p><ul class="mini-list"><li>Spring and fall visits</li><li>Maintenance reminders</li><li>Service history</li></ul></article>
           <article class="card"><div class="service-icon">RP</div><h3>Repairs</h3><p>Clear repair notes, documented recommendations, and invoice records for customer history.</p><ul class="mini-list"><li>Work order notes</li><li>Customer follow-up</li><li>Professional invoices</li></ul></article>
-          <article class="card"><div class="service-icon">$</div><h3>Project Pricing</h3><p>Professional estimates for repair work, maintenance, replacements, and insulation needs.</p><ul class="mini-list"><li>Clear scope</li><li>Written details</li><li>Free estimates</li></ul></article>
+          <article class="card"><div class="service-icon">$</div><h3>Project Pricing</h3><p>Professional estimates for repair work, maintenance, replacements, and insulation needs.</p><ul class="mini-list"><li>Clear scope</li><li>Written details</li><li>Free insulation estimates</li></ul></article>
         </div>
       </div>
     </section>
@@ -602,30 +602,14 @@
       <div class="wrap">
         <div class="section-head">
           <h2>Request Service or a Free Insulation Estimate</h2>
-          <p>Fill this out and it will prepare an email to A-1 Insulation & Air with the details. You can review it before sending.</p>
+          <p>Send your request directly to A-1 Insulation &amp; Air LLC. We will follow up to confirm details and appointment availability.</p>
         </div>
         <div class="grid cols2">
-          <form id="estimateForm" class="form-card">
-            <label>Name <input name="name" required autocomplete="name" placeholder="Your name"></label>
-            <label>Phone <input name="phone" required autocomplete="tel" placeholder="123-456-7890"></label>
-            <label>Email <input name="email" type="email" autocomplete="email" placeholder="you@email.com"></label>
-            <label>City <input name="city" required autocomplete="address-level2" placeholder="City where service is needed"></label>
-            <label class="span2">Service Needed
-              <span class="check-group">
-                <span class="check-option"><input type="checkbox" name="service" value="Air Conditioning Service"> Air Conditioning</span>
-                <span class="check-option"><input type="checkbox" name="service" value="Heating Service"> Heating</span>
-                <span class="check-option"><input type="checkbox" name="service" value="Insulation Installation or Upgrade"> Insulation</span>
-                <span class="check-option"><input type="checkbox" name="service" value="Residential Maintenance Agreement"> Maintenance Agreement</span>
-                <span class="check-option"><input type="checkbox" name="service" value="Repair"> Repair</span>
-                <span class="check-option"><input type="checkbox" name="service" value="Free Insulation Estimate"> Free Insulation Estimate</span>
-              </span>
-            </label>
-            <p class="form-note">You can choose more than one service, such as air conditioning and insulation.</p>
-            <label class="span2">Urgency <select name="urgency"><option>Flexible</option><option>This Week</option><option>Today if Available</option><option>Urgent HVAC Issue</option><option>Planning Ahead</option></select></label>
-            <label class="span2">Preferred Time <input name="time" placeholder="Morning, afternoon, or a specific date"></label>
-            <label class="span2">How can we help? <textarea name="message" required placeholder="Tell us what is going on, what you need estimated, or anything helpful about the job."></textarea></label>
-            <button class="btn span2" type="submit">Prepare Email Request</button>
-          </form>
+          <div class="request-form-panel">
+  <p><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScwM27meroY3OdA7Tu2vWPYSsbpfGsn83zfB4UVSaZjBl84tA/viewform" target="_blank" rel="noopener">Open Request Form</a></p>
+  <p class="form-note">Submit your request below or open the form in a separate tab. No Google account is required.</p>
+  <iframe title="A-1 Insulation &amp; Air service request form" src="https://docs.google.com/forms/d/e/1FAIpQLScwM27meroY3OdA7Tu2vWPYSsbpfGsn83zfB4UVSaZjBl84tA/viewform?embedded=true" width="100%" height="2100" style="border:0;display:block" loading="lazy">Loading request form...</iframe>
+</div>
           <aside class="contact-panel">
             <h3>A-1 Insulation & Air LLC</h3>
             <p style="margin:0 0 12px;color:#667085;line-height:1.45">For faster scheduling, include your city, system type if known, and a short description of the issue.</p>
@@ -640,14 +624,14 @@
                 <li>Heating, cooling, or insulation concern</li>
                 <li>System type or filter size if known</li>
               </ul>
-              <p class="photo-note">If photos would help, attach them after the email draft opens.</p>
+              <p class="photo-note">If photos would help, email them to A1INSULATIONAIRDFW@GMAIL.COM and include your name and city.</p>
             </div>
             <div class="next-steps">
               <h4>What happens next</h4>
               <ol>
-                <li>The button opens an email draft with your request details.</li>
-                <li>You can review the email and attach photos if needed.</li>
-                <li>A-1 follows up to confirm details and scheduling.</li>
+                <li>Complete the request form and select Submit.</li>
+                <li>You will see a confirmation that your request was received.</li>
+                <li>A-1 follows up to confirm details and scheduling. Submitting a request does not book an appointment.</li>
               </ol>
             </div>
           </aside>
@@ -720,47 +704,6 @@
     });
   });
 
-  const businessEmail = 'A1INSULATIONAIRDFW@GMAIL.COM';
-  const form = document.getElementById('estimateForm');
-  function enc(v){ return encodeURIComponent(v || ''); }
-  function formatPhone(value){
-    const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return digits.slice(0, 3) + '-' + digits.slice(3);
-    return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6);
-  }
-  const phoneInput = form.querySelector('input[name="phone"]');
-  phoneInput.addEventListener('input', () => {
-    phoneInput.value = formatPhone(phoneInput.value);
-  });
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const data = new FormData(form);
-    const selectedServices = data.getAll('service');
-    if (!selectedServices.length) {
-      alert('Please choose at least one service needed.');
-      return;
-    }
-    const serviceSummary = selectedServices.length ? selectedServices.join(' + ') : 'Not specified';
-    const subject = 'Website request - ' + serviceSummary + ' - ' + data.get('city');
-    const body = [
-      'New website service request',
-      '',
-      'Name: ' + data.get('name'),
-      'Phone: ' + data.get('phone'),
-      'Email: ' + data.get('email'),
-      'City: ' + data.get('city'),
-      'Services Needed: ' + serviceSummary,
-      'Urgency: ' + data.get('urgency'),
-      'Preferred Time: ' + data.get('time'),
-      'Photos: Customer may attach photos to this email before sending.',
-      '',
-      'Message:',
-      data.get('message')
-    ].join('\n');
-    const url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + enc(businessEmail) + '&su=' + enc(subject) + '&body=' + enc(body);
-    window.open(url, '_blank');
-  });
 </script>
 </body>
 </html>
