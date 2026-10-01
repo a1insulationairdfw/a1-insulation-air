@@ -725,6 +725,36 @@
     });
   });
 
+  // Send telephone clicks before opening the dialer, without blocking calls if Analytics is unavailable.
+  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+    link.addEventListener('click', event => {
+      if (event.defaultPrevented || typeof window.gtag !== 'function') return;
+      const phoneUrl = link.getAttribute('href');
+      const modifiedClick = event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
+      let opened = false;
+      let fallback;
+      const openPhone = () => {
+        if (opened || modifiedClick) return;
+        opened = true;
+        clearTimeout(fallback);
+        window.location.href = phoneUrl;
+      };
+      if (!modifiedClick) {
+        event.preventDefault();
+        fallback = setTimeout(openPhone, 800);
+      }
+      try {
+        window.gtag('event', 'call_now_click', {
+          send_to: 'G-NMW5L7QPZ6',
+          event_callback: openPhone,
+          event_timeout: 800
+        });
+      } catch (error) {
+        openPhone();
+      }
+    });
+  });
+
 </script>
 </body>
 </html>
