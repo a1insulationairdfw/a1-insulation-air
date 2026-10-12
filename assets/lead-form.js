@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>A-1 form setup check</title><script async src="https://www.googletagmanager.com/gtag/js?id=G-NMW5L7QPZ6"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag("js",new Date());gtag("config","G-NMW5L7QPZ6",{debug_mode:true});window.A1_LEAD_FORM={endpoint:"https://script.google.com/macros/s/AKfycbxl-d4mRkFw2i8vevC1-Nze_eE6kYHJnVSXLEOwxQS3SmVgm40fa6EBo14Cno6LyoKA/exec",measurementId:"G-NMW5L7QPZ6"};</script></head><body style="font-family:Arial;max-width:700px;margin:20px auto;padding:15px"><h1>A-1 form setup check</h1><p>Testing only. Requests from this page must be labeled TEST ONLY.</p><a href="https://docs.google.com/forms/d/e/1FAIpQLScwM27meroY3OdA7Tu2vWPYSsbpfGsn83zfB4UVSaZjBl84tA/viewform" target="_blank" rel="noopener">Open Request Form</a><iframe title="Original request form" src="https://docs.google.com/forms/d/e/1FAIpQLScwM27meroY3OdA7Tu2vWPYSsbpfGsn83zfB4UVSaZjBl84tA/viewform?embedded=true" width="100%" height="2100" loading="lazy" style="border:0"></iframe><script>(() => {
+(() => {
   'use strict';
   const config = window.A1_LEAD_FORM;
   if (!config || !config.endpoint) return; // Existing Google Form remains available.
@@ -80,4 +80,3 @@
   frame.src = endpoint.href;
 })();
 
-</script></body></html>
