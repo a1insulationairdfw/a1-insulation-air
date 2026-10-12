@@ -75,13 +75,13 @@ test('daily save cap rejects additional requests without losing prior records',(
   assert.throws(()=>s.context.submitServiceRequest(s.input()));assert.equal(s.rows.length,1);
 });
 
-function website(endpoint='https://script.google.com/macros/s/test/exec') {
+function website(endpoint='https://script.google.com/macros/s/test/exec', hasForm=true) {
   const original={style:{},before:(...nodes)=>state.nodes.push(...nodes)};
   const state={nodes:[],events:[],timers:[],listener:null};
   const context=vm.createContext({URL,URLSearchParams,Uint8Array,console,crypto:crypto.webcrypto,
     location:{search:'?utm_source=a1_test&utm_medium=qa&utm_campaign=demo',origin:'https://a1insulationairdfw.github.io',hostname:'a1insulationairdfw.github.io',pathname:'/a1-insulation-air/'},
-    document:{referrer:'',querySelector:()=>original,createElement:()=>({style:{},setAttribute(){},remove(){}})},
-    sessionStorage:{getItem:()=>null,setItem(){}},
+    document:{referrer:'',querySelector:()=>hasForm?original:null,createElement:()=>({style:{},setAttribute(){},remove(){}})},
+    sessionStorage:{getItem:()=>null,setItem:(key,value)=>state.context=JSON.parse(value)},
     setTimeout:f=>{state.timers.push(f);return state.timers.length},clearTimeout(){},
     window:{A1_LEAD_FORM:{endpoint,measurementId:'G-TEST'},crypto:crypto.webcrypto,addEventListener:(name,f)=>state.listener=f,removeEventListener:()=>state.listener=null,gtag:(...args)=>state.events.push(args)}
   });
@@ -92,6 +92,13 @@ function website(endpoint='https://script.google.com/macros/s/test/exec') {
 }
 test('empty config keeps the original Google Form intact',()=>{
   const s=website('');assert.equal(s.nodes.length,0);assert.equal(s.original.style.display,undefined);
+});
+test('service landing pages retain marketing labels before navigating to a form page',()=>{
+  const s=website('https://script.google.com/macros/s/test/exec',false);
+  assert.equal(s.nodes.length,0);
+  assert.equal(s.context.utm_source,'a1_test');
+  assert.equal(s.context.utm_medium,'qa');
+  assert.equal(s.context.utm_campaign,'demo');
 });
 test('load failure keeps the original form available',()=>{
   const s=website();s.timers[0]();assert.equal(s.original.style.display,undefined);assert.equal(s.listener,null);
