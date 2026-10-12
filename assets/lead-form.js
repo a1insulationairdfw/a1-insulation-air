@@ -38,7 +38,7 @@
   }
   const frame = document.createElement('iframe');
   frame.title = 'A-1 service request';
-  frame.style.cssText = 'width:100%;height:1200px;border:0;display:none';
+  frame.style.cssText = 'width:100%;height:1450px;border:0;display:none';
   frame.referrerPolicy = 'no-referrer';
   const status = document.createElement('p');
   status.setAttribute('role', 'status');
@@ -57,11 +57,22 @@
       trustedSource.postMessage({type: 'a1:init', nonce}, event.origin);
       original.style.display = 'none';
       frame.style.display = 'block';
-      status.textContent = 'Prefer the original form? Use the Open Request Form link above.';
+      // Once the new form is available, make the legacy link a secondary option.
+      const panel = original.parentElement;
+      if (panel) {
+        panel.querySelectorAll('a[href^="https://docs.google.com/forms/"]').forEach(link => {
+          link.textContent = 'Use the original Google Form';
+          link.classList.remove('btn');
+        });
+        const note = panel.querySelector('.form-note');
+        if (note) note.textContent = 'Complete your service request below. No Google account is required.';
+      }
+      status.textContent = 'Having trouble? The original Google Form is available above.';
       clearTimeout(loadTimeout);
     } else if (message.type === 'a1:saved' && event.source === trustedSource &&
                /^[a-f0-9-]{36}$/i.test(message.requestId || '') && !counted.has(message.requestId)) {
       counted.add(message.requestId);
+      frame.style.height = '600px';
       // Only the event name and non-personal form identifier reach Analytics.
       if (typeof window.gtag === 'function') {
         window.gtag('event', 'generate_lead', {
