@@ -8,9 +8,6 @@
     if (endpoint.origin !== 'https://script.google.com' ||
         !/^\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(endpoint.pathname)) return;
   } catch (_) { return; }
-  const original = document.querySelector('iframe[src*="docs.google.com/forms/"]');
-  if (!original || !window.crypto || !crypto.getRandomValues) return;
-  const nonce = Array.from(crypto.getRandomValues(new Uint8Array(24)), x => x.toString(16).padStart(2, '0')).join('');
   const attribution = {};
   const campaignKeys = ['utm_source', 'utm_medium', 'utm_campaign'];
   const params = new URLSearchParams(location.search);
@@ -30,6 +27,10 @@
     attribution.referrer_host = referrerHost;
   }
   try { sessionStorage.setItem('a1_lead_context', JSON.stringify(attribution)); } catch (_) {}
+  // Capture landing context on service pages too, before their links lead to the form.
+  const original = document.querySelector('iframe[src*="docs.google.com/forms/"]');
+  if (!original || !window.crypto || !crypto.getRandomValues) return;
+  const nonce = Array.from(crypto.getRandomValues(new Uint8Array(24)), x => x.toString(16).padStart(2, '0')).join('');
   endpoint.search = '';
   endpoint.searchParams.set('parent_origin', location.origin);
   endpoint.searchParams.set('nonce', nonce);
