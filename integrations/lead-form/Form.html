@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><base target="_top">
+<style>
+body{font-family:Arial,sans-serif;color:#17283c;background:#fff;margin:0;padding:20px;line-height:1.5}
+h1{font-size:26px;margin:0 0 8px}p{margin:0 0 20px;color:#4b5563}label{display:block;font-weight:600;margin:16px 0 6px}
+input,select,textarea{box-sizing:border-box;width:100%;padding:12px;border:1px solid #8b96a5;border-radius:6px;font:inherit;background:#fff;color:#17283c}
+textarea{min-height:110px;resize:vertical}button{padding:14px 22px;background:#173f69;color:white;border:0;border-radius:6px;font:inherit;font-weight:bold;margin:20px 0;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}a{color:#173f69}.trap{position:absolute;left:-10000px}#status{white-space:pre-line}#status.error{color:#a11919}
+input:focus,select:focus,textarea:focus,button:focus{outline:3px solid #e8ad43;outline-offset:2px}
+</style></head><body>
+<p id="loading">Connecting to the A-1 website…</p>
+<main id="main" hidden>
+<h1>Request service from A-1</h1>
+<p>Tell us what your home needs. We’ll contact you to confirm details and availability. For faster help, call <a href="tel:4697163088">469-716-3088</a>.</p>
+<form id="request">
+<label for="name">Name *</label><input id="name" name="name" autocomplete="name" maxlength="100" required>
+<label for="phone">Phone *</label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40" required>
+<label for="email">Email (optional)</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254">
+<label for="city">City *</label><input id="city" name="city" autocomplete="address-level2" maxlength="100" required>
+<label for="service">What do you need? *</label><select id="service" name="service" required>
+<option value="">Select a service</option><option>HVAC repair</option><option>Winter HVAC inspection</option><option>New HVAC system estimate</option><option>Insulation</option><option>Other</option></select>
+<label for="preferred">Preferred time to contact you (optional)</label><input id="preferred" name="preferred" maxlength="200">
+<label for="details">Tell us about the issue *</label><textarea id="details" name="details" maxlength="2000" required></textarea>
+<div class="trap" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+<p style="margin-top:16px;font-size:14px">By submitting, you ask A-1 to contact you about this service request. Your request is saved in A-1’s private Google Sheet and emailed to the business.</p>
+<button id="send" type="submit">Send service request</button>
+</form>
+<p id="status" role="status" aria-live="polite" tabindex="-1"></p>
+</main>
+<script id="context" type="application/json"><?!= contextJson ?></script>
+<script>
+const context = JSON.parse(document.getElementById('context').textContent);
+const form = document.getElementById('request');
+const status = document.getElementById('status');
+let connected = false;
+window.addEventListener('message', event => {
+  if (event.origin !== context.parentOrigin || event.source !== window.top ||
+      !event.data || event.data.type !== 'a1:init' || event.data.nonce !== context.nonce) return;
+  connected = true;
+  document.getElementById('loading').hidden = true;
+  document.getElementById('main').hidden = false;
+});
+window.top.postMessage({type:'a1:ready', nonce:context.nonce}, context.parentOrigin);
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  if (!connected || !form.reportValidity()) return;
+  const button = document.getElementById('send');
+  if (button.disabled) return;
+  button.disabled = true;
+  status.className = '';
+  status.textContent = 'Saving your request…';
+  const input = Object.fromEntries(new FormData(form).entries());
+  input.context = context;
+  google.script.run.withSuccessHandler(result => {
+    if (!result || result.saved !== true || result.requestId !== context.requestId) {
+      showError('We could not confirm your request. Please call 469-716-3088.');
+      return;
+    }
+    form.hidden = true;
+    status.textContent = 'Thank you—your request has been received. A-1 will follow up to confirm details and availability. This does not book an appointment.';
+    status.focus();
+    window.top.postMessage({type:'a1:saved', nonce:context.nonce, requestId:result.requestId}, context.parentOrigin);
+  }).withFailureHandler(error => {
+    showError(error && error.message ? error.message : 'Unable to submit. Please call 469-716-3088.');
+  }).submitServiceRequest(input);
+});
+function showError(message) {
+  document.getElementById('send').disabled = false;
+  status.className = 'error';
+  status.textContent = message;
+  status.focus();
+}
+</script></body></html>
+
